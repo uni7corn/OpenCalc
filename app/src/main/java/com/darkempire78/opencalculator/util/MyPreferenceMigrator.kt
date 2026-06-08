@@ -7,8 +7,6 @@ import com.darkempire78.opencalculator.util.ScientificModeTypes
  */
 object MyPreferenceMigrator {
 
-    private val DEFAULT_SCIENTIFIC_MODE = ScientificModeTypes.ACTIVE
-
 
     /**
      * Migrates a boolean preference value to its corresponding enum ordinal representation.
@@ -18,7 +16,7 @@ object MyPreferenceMigrator {
      * @return The migrated ordinal value according to these rules:
      *         - true → ScientificModeTypes.ACTIVE.ordinal (1)
      *         - false → ScientificModeTypes.NOT_ACTIVE.ordinal (0)
-     *         - Invalid/unknown types → ScientificModeTypes.ACTIVE.ordinal (1)
+     *         - Invalid/unknown types → ScientificModeTypes.OFF.ordinal (2)
      * @throws IllegalArgumentException if sharedPreferences is null
      */
     fun migrateScientificMode(sharedPreferences: SharedPreferences, key: String): Int {
@@ -41,7 +39,7 @@ object MyPreferenceMigrator {
                     resetToDefault(sharedPreferences, key)
                 }
             }
-            // All other cases reset to the default scientific mode
+            // All other cases reset to OFF
             else -> resetToDefault(sharedPreferences, key)
         }
     }
@@ -72,17 +70,17 @@ object MyPreferenceMigrator {
     }
 
     /**
-     * Resets a preference to the default ACTIVE state.
+     * Resets a preference to the default OFF state.
      *
      * @param sharedPreferences The SharedPreferences instance to modify
      * @param key The preference key to reset
-     * @return The default ordinal value (ScientificModeTypes.ACTIVE.ordinal)
+     * @return The default ordinal value (ScientificModeTypes.OFF.ordinal)
      */
     private fun resetToDefault(sharedPreferences: SharedPreferences, key: String): Int {
         return saveMigratedValue(
             sharedPreferences,
             key,
-            DEFAULT_SCIENTIFIC_MODE.ordinal
+            ScientificModeTypes.OFF.ordinal
         )
     }
 
@@ -95,10 +93,10 @@ object MyPreferenceMigrator {
      */
     fun getCurrentMode(sharedPreferences: SharedPreferences, key: String): ScientificModeTypes {
         return try {
-            val ordinal = sharedPreferences.getInt(key, DEFAULT_SCIENTIFIC_MODE.ordinal)
-            ScientificModeTypes.entries.getOrNull(ordinal) ?: DEFAULT_SCIENTIFIC_MODE
+            val ordinal = sharedPreferences.getInt(key, ScientificModeTypes.OFF.ordinal)
+            ScientificModeTypes.entries.getOrNull(ordinal) ?: ScientificModeTypes.OFF
         } catch (e: Exception) {
-            DEFAULT_SCIENTIFIC_MODE
+            ScientificModeTypes.OFF
         }
     }
 }

@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         DecimalFormatSymbols.getInstance().groupingSeparator.toString()
 
     private var numberingSystem = NumberingSystem.INTERNATIONAL
-    private var scientificModeType = ScientificModeTypes.ACTIVE
+    private var scientificModeType = ScientificModeTypes.NOT_ACTIVE
 
     private var isInvButtonClicked = false
     private var isEqualLastAction = false
