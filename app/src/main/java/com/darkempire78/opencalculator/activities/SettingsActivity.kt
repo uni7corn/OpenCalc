@@ -21,6 +21,7 @@ import com.darkempire78.opencalculator.R
 import com.darkempire78.opencalculator.Themes
 import com.darkempire78.opencalculator.calculator.parser.NumberingSystem
 import com.darkempire78.opencalculator.util.ScientificMode
+import com.darkempire78.opencalculator.util.ScientificModeTypes
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.Locale
 
@@ -199,32 +200,20 @@ class SettingsActivity : AppCompatActivity() {
             val builder = MaterialAlertDialogBuilder(context)
             builder.background = ContextCompat.getDrawable(context, R.drawable.rounded)
 
-            val scientificMode = hashMapOf(
-                0 to context.getString(R.string.settings_general_scientific_mode_deactivate_desc),
-                1 to context.getString(R.string.settings_general_scientific_mode_desc),
-                2 to context.getString(R.string.settings_general_scientific_mode_hide_desc)
+            val scientificModeOptions = listOf(
+                ScientificModeTypes.ACTIVE to context.getString(R.string.settings_general_scientific_mode_desc),
+                ScientificModeTypes.NOT_ACTIVE to context.getString(R.string.settings_general_scientific_mode_deactivate_desc),
+                ScientificModeTypes.OFF to context.getString(R.string.settings_general_scientific_mode_hide_desc)
             )
 
-            val checkedItem = preferences.scientificMode
+            val checkedItem = scientificModeOptions.indexOfFirst { it.first.ordinal == preferences.scientificMode }
+                .takeIf { it >= 0 } ?: 0
 
             builder.setSingleChoiceItems(
-                scientificMode.values.toTypedArray(),
+                scientificModeOptions.map { it.second }.toTypedArray(),
                 checkedItem
             ) { dialog, which ->
-                when (which) {
-                    0 -> {
-                        preferences.scientificMode = 0
-                    }
-
-                    1 -> {
-                        preferences.scientificMode = 1
-                    }
-
-                    2-> {
-                        preferences.scientificMode = 2
-                    }
-
-                }
+                preferences.scientificMode = scientificModeOptions[which].first.ordinal
                 dialog.dismiss()
                 reloadActivity(requireContext())
             }
